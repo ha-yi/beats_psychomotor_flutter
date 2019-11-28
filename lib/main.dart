@@ -1,4 +1,6 @@
+import 'package:beats_ft/providers/GameBoardData.dart';
 import 'package:beats_ft/providers/ServerInfo.dart';
+import 'package:beats_ft/providers/TaskProvider.dart';
 import 'package:beats_ft/providers/UserInfo.dart';
 import 'package:beats_ft/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -13,12 +15,11 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(builder: (context) => ServerInfo()),
-        Provider(
-          builder: (context) => UserInfo(),
-        ),
-        Provider(
-          builder: (context) => ServerInfo(),
-        ),
+        ChangeNotifierProvider(builder: (context) => UserInfo()),
+        ChangeNotifierProvider(builder: (context) => TaskInfo()),
+        ChangeNotifierProvider(builder: (context) => GameBoardData()),
+        ChangeNotifierProvider(builder: (context) => SelectedColor()),
+        Provider(builder: (context) => GameTypeProvider()),
       ],
       child: MyApp(),
     ),

@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:beats_ft/helper.dart';
+import 'package:beats_ft/providers/ServerInfo.dart';
 import 'package:beats_ft/providers/UserInfo.dart';
 import 'package:beats_ft/screens/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -131,11 +135,13 @@ class _UserInfoWidgetState extends State<UserInfoWidget> {
 
   void processSaveData() {
     var data = Provider.of<UserInfo>(context, listen: false);
+    
     data.age = age;
     data.gender = gender;
     data.email = email;
     data.name = name;
     widget.parentState.onUserDataSaved();
+    sendToServer(context, GameCommad(ADD_USER_INFO, json.encode(data.toJson()).toString()));
     dispose();
   }
 }

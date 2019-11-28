@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:beats_ft/screens/MainScreen.dart';
 import 'package:beats_ft/screens/home_screen.dart';
 import 'package:beats_ft/screens/server_scanner_screen.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +9,8 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Timer(Duration(seconds: 3), () {
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => ServerScannerScreen()));
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => MainScreen()));
     });
 
     return Scaffold(

@@ -1,4 +1,5 @@
 import 'package:beats_ft/providers/UserInfo.dart';
+import 'package:beats_ft/screens/choice_screen.dart';
 import 'package:beats_ft/screens/user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +34,15 @@ class HomeScreenState extends State<HomeScreen> {
         if (user.name == null || user.name.isEmpty) {
           return requestUserInfo();
         } else {
-          return Container();
+          Future.delayed(Duration(seconds: 1), () {
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => ChoiceScreen()));
+          });
+          return Container(
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
         }
       },
     );

@@ -1,4 +1,6 @@
+import 'package:beats_ft/helper.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -22,6 +24,10 @@ class ServerInfo extends ChangeNotifier {
     return await channel.stream.first;
   }
 
+  sendGameData(int command, dynamic data) {
+    channel.sink.add(GameCommad(command, data).toJson().toString());
+  }
+
   onData(String data) {
     if (data.trim() == "connected") {
       connected = true;
@@ -40,4 +46,9 @@ class ServerInfo extends ChangeNotifier {
     print("WS conenction done");
     notifyListeners();
   }
+}
+
+sendToServer(BuildContext context, GameCommad data) {
+  ServerInfo server = Provider.of<ServerInfo>(context, listen: false);
+  server.channel.sink.add(data.toJson().toString());
 }

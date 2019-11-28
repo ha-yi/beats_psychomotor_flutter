@@ -1,4 +1,5 @@
 import 'package:beats_ft/providers/ServerInfo.dart';
+import 'package:beats_ft/screens/home_screen.dart';
 import 'package:beats_ft/screens/server_scanner_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +18,7 @@ class MainScreenState extends State<MainScreen> {
           if (server.serverAddress == null) {
             return ServerScannerScreen();
           } else {
-            return Container();
+            return HomeScreen();
           }
         },
       ),
