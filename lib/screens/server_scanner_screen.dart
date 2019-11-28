@@ -13,28 +13,30 @@ class _ServerScannerScreenState extends State<ServerScannerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            "BEATS client",
-            style: TextStyle(fontSize: 20),
-          ),
-          Container(
-            margin: EdgeInsets.all(20),
-            child: Text(
-                "Scan barcode yang ada pada server untuk menginisialisasi koneksi ke server"),
-          ),
-          MaterialButton(
-            onPressed: _scanQR,
-            color: Colors.green,
-            child: Text(
-              "Scan Barcode",
-              style: TextStyle(color: Colors.white),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              "BEATS client",
+              style: TextStyle(fontSize: 20),
             ),
-          ),
-        ],
+            Container(
+              margin: EdgeInsets.all(20),
+              child: Text(
+                  "Scan barcode yang ada pada server untuk menginisialisasi koneksi ke server"),
+            ),
+            MaterialButton(
+              onPressed: _scanQR,
+              color: Colors.green,
+              child: Text(
+                "Scan Barcode",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

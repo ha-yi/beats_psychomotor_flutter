@@ -34,9 +34,10 @@ class _BoardTilesState extends State<BoardTiles> {
             child: Center(
               child: MaterialButton(
                 onPressed: () {
-                  TaskInfo task = Provider.of<TaskInfo>(context, listen: false);
+                  TaskInfo task = Provider.of<TaskInfo>(context);
                   task.nextTask();
                   board.setColumn(task.getCount());
+                  board.taskId = task.taskId;
                 },
                 child: Text(
                   "MULAI",

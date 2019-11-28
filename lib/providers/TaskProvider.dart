@@ -10,7 +10,7 @@ class TaskInfo extends ChangeNotifier {
     if (!finished) {
       taskId += 1;
     }
-    finished = (taskId >= 8);
+    finished = (taskId > 8);
     notifyListeners();
   }
 

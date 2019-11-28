@@ -2,6 +2,7 @@ import 'package:beats_ft/providers/GameBoardData.dart';
 import 'package:beats_ft/providers/ServerInfo.dart';
 import 'package:beats_ft/providers/TaskProvider.dart';
 import 'package:beats_ft/screens/games/game_board.dart';
+import 'package:beats_ft/screens/games/group_game_board.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -116,11 +117,20 @@ class _ChoiceScreenState extends State<ChoiceScreen> {
   }
 
   void _gotoPersonalTest() {
-    Provider.of<TaskInfo>(context, listen: false).reset();
+    Provider.of<TaskInfo>(context).reset();
     Provider.of<GameBoardData>(context, listen: false).reset();
+    Provider.of<GameTypeProvider>(context, listen: false).isPersonal = true;
+
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => GameBoard()));
   }
 
-  void _gotoGroupTest() {}
+  void _gotoGroupTest() {
+    Provider.of<TaskInfo>(context, listen: false).reset();
+    Provider.of<GameBoardData>(context, listen: false).reset();
+    Provider.of<GameTypeProvider>(context, listen: false).isPersonal = false;
+
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => GroupGameBoard()));
+  }
 }

@@ -25,12 +25,14 @@ class TileInfo {
 class GameBoardData extends ChangeNotifier {
   int col = 0;
   List<List<TileInfo>> grid = [];
+  int taskId;
 
   GameBoardData();
 
   reset() {
     this.col = 0;
     grid = [];
+    taskId = 0;
     notifyListeners();
   }
 
@@ -63,6 +65,7 @@ class GameBoardData extends ChangeNotifier {
 
   Map<String, dynamic> toJson() => {
         'col': col,
+        'taskId': taskId,
         'grid': grid.map((l) {
           return l.map((t) {
             return t.toJson();

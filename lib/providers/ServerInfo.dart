@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:beats_ft/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +11,8 @@ class ServerInfo extends ChangeNotifier {
   final String _defaultPort = "9999";
   WebSocketChannel channel;
   bool connected = false;
+
+  GameCommad dataFromServer;
 
   String getServerFullAddress() {
     if (serverAddress != null && !serverAddress.contains(":")) {
@@ -29,11 +33,17 @@ class ServerInfo extends ChangeNotifier {
   }
 
   onData(String data) {
+    dataFromServer = null;
+    print(data);
     if (data.trim() == "connected") {
       connected = true;
       notifyListeners();
     }
-    print("WS data $data");
+    if (data.startsWith("{code: 3")) {
+      dataFromServer = GameCommad.fromJson(json.decode(data));
+      print(dataFromServer);
+      notifyListeners();
+    }
   }
 
   onError(e) {

@@ -7,16 +7,16 @@ import 'package:fancy_dialog/fancy_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class GameBoard extends StatefulWidget {
+class GroupGameBoard extends StatefulWidget {
   final bool isPersonal;
 
-  const GameBoard({Key key, this.isPersonal = true}) : super(key: key);
+  const GroupGameBoard({Key key, this.isPersonal = true}) : super(key: key);
 
   @override
-  _GameBoardState createState() => _GameBoardState();
+  _GroupGameBoardState createState() => _GroupGameBoardState();
 }
 
-class _GameBoardState extends State<GameBoard> {
+class _GroupGameBoardState extends State<GroupGameBoard> {
   ServerInfo server;
 
   @override
@@ -105,12 +105,10 @@ class _GameBoardState extends State<GameBoard> {
       MaterialButton(
         color: Colors.green,
         onPressed: () {
-          TaskInfo task = Provider.of<TaskInfo>(context);
+          TaskInfo task = Provider.of<TaskInfo>(context, listen: false);
           task.nextTask();
           Provider.of<GameBoardData>(context, listen: false)
               .setColumn(task.getCount());
-          Provider.of<GameBoardData>(context, listen: false).taskId =
-              task.taskId;
         },
         child: Text(
           "Task Berikutnya",
