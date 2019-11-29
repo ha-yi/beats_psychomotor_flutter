@@ -1,3 +1,4 @@
+import 'package:beats_ft/helper.dart';
 import 'package:beats_ft/providers/GameBoardData.dart';
 import 'package:beats_ft/providers/ServerInfo.dart';
 import 'package:beats_ft/providers/TaskProvider.dart';
@@ -22,6 +23,9 @@ class _GameBoardState extends State<GameBoard> {
   @override
   void initState() {
     super.initState();
+    Future.delayed(Duration(milliseconds: 300), () {
+      sendToServer(context, GameCommad(91, ""));
+    });
   }
 
   @override

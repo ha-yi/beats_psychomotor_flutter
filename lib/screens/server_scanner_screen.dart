@@ -12,6 +12,7 @@ class ServerScannerScreen extends StatefulWidget {
 class _ServerScannerScreenState extends State<ServerScannerScreen> {
   @override
   Widget build(BuildContext context) {
+//    ServerInfo
     return Scaffold(
       body: Center(
         child: Column(
@@ -49,15 +50,13 @@ class _ServerScannerScreenState extends State<ServerScannerScreen> {
   void tryConnectToServer(String ip) {
     ServerInfo data = Provider.of<ServerInfo>(context, listen: true);
     data.serverAddress = ip;
-    data.startConnect().then((d) {
-      print("listener $d");
-      print("is connecter ${data.connected}");
-    });
+    data.startConnect();
   }
 
   Future _scanQR() async {
     try {
       String qrResult = await BarcodeScanner.scan();
+      print(qrResult);
       if (isIP(qrResult)) {
         tryConnectToServer(qrResult);
       }

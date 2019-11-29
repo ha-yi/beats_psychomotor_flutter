@@ -1,8 +1,10 @@
+import 'package:beats_ft/helper.dart';
 import 'package:beats_ft/providers/GameBoardData.dart';
 import 'package:beats_ft/providers/ServerInfo.dart';
 import 'package:beats_ft/providers/TaskProvider.dart';
 import 'package:beats_ft/screens/games/game_board.dart';
 import 'package:beats_ft/screens/games/group_game_board.dart';
+import 'package:beats_ft/screens/wating_group_started.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,9 +14,17 @@ class ChoiceScreen extends StatefulWidget {
 }
 
 class _ChoiceScreenState extends State<ChoiceScreen> {
+  GlobalKey<ScaffoldState> _scaffold = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffold,
       body: Container(
         child: Center(
           child: Column(
@@ -126,11 +136,7 @@ class _ChoiceScreenState extends State<ChoiceScreen> {
   }
 
   void _gotoGroupTest() {
-    Provider.of<TaskInfo>(context, listen: false).reset();
-    Provider.of<GameBoardData>(context, listen: false).reset();
-    Provider.of<GameTypeProvider>(context, listen: false).isPersonal = false;
-
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => GroupGameBoard()));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => WaitingForServerStartGame()));
   }
 }

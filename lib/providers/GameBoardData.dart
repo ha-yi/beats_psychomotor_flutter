@@ -5,6 +5,7 @@ class TileInfo {
   int x, y;
   String color;
   int timestamp;
+  String userID;
 
   TileInfo(this.x, this.y, this.color);
 

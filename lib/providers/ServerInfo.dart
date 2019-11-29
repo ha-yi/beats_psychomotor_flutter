@@ -11,21 +11,28 @@ class ServerInfo extends ChangeNotifier {
   final String _defaultPort = "9999";
   WebSocketChannel channel;
   bool connected = false;
+  var error;
+  bool loading = false;
 
   GameCommad dataFromServer;
 
   String getServerFullAddress() {
+    print(serverAddress);
     if (serverAddress != null && !serverAddress.contains(":")) {
       serverAddress += ":$_defaultPort";
     }
     return serverAddress;
   }
 
-  Future<dynamic> startConnect() async {
+  startConnect() {
+    error = null;
+    loading = true;
     channel = IOWebSocketChannel.connect('ws://${getServerFullAddress()}');
     channel.stream.listen((data) => onData(data),
-        onError: (e) => onError(e), onDone: () => onDone());
-    return await channel.stream.first;
+        onError: (e) => onError(e),
+        onDone: () => onDone(),
+        cancelOnError: true);
+    notifyListeners();
   }
 
   sendGameData(int command, dynamic data) {
@@ -33,25 +40,30 @@ class ServerInfo extends ChangeNotifier {
   }
 
   onData(String data) {
+    loading = false;
+    error = null;
     dataFromServer = null;
     print(data);
     if (data.trim() == "connected") {
       connected = true;
       notifyListeners();
+      return;
     }
-    if (data.startsWith("{code: 3")) {
-      dataFromServer = GameCommad.fromJson(json.decode(data));
-      print(dataFromServer);
-      notifyListeners();
-    }
+    dataFromServer = GameCommad.fromJson(json.decode(data));
+    print(dataFromServer);
+    notifyListeners();
   }
 
   onError(e) {
+    loading = false;
     print("WS conenction error $e");
+    connected = false;
+    error = e;
     notifyListeners();
   }
 
   onDone() {
+    loading = false;
     connected = false;
     print("WS conenction done");
     notifyListeners();

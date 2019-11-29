@@ -2,6 +2,7 @@ import 'package:beats_ft/helper.dart';
 import 'package:beats_ft/providers/GameBoardData.dart';
 import 'package:beats_ft/providers/ServerInfo.dart';
 import 'package:beats_ft/providers/TaskProvider.dart';
+import 'package:beats_ft/providers/UserInfo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tile_grid/flutter_tile_grid.dart';
 import 'package:provider/provider.dart';
@@ -226,7 +227,10 @@ class _BoardTilesState extends State<BoardTiles> {
       return InkWell(
         onTap: () {
           i.color = Provider.of<SelectedColor>(context, listen: false).color;
+          String user = Provider.of<UserInfo>(context, listen: false).name;
           i.timestamp = DateTime.now().millisecondsSinceEpoch;
+          i.userID = user;
+
           board.updateBoard(i.x, i.y, i);
           sendBoard(board);
         },

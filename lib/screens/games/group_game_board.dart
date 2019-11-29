@@ -31,12 +31,6 @@ class _GroupGameBoardState extends State<GroupGameBoard> {
         padding: EdgeInsets.all(50),
         child: Row(
           children: <Widget>[
-            Container(
-              width: 150,
-              child: Column(
-                children: _buildTaskList(),
-              ),
-            ),
             Expanded(
               flex: 1,
               child: Column(
@@ -44,7 +38,7 @@ class _GroupGameBoardState extends State<GroupGameBoard> {
                   Container(
                     margin: EdgeInsets.all(10),
                     child: Text(
-                        "Task ke - ${Provider.of<TaskInfo>(context).taskId}"),
+                        "GROUP Task ke - ${Provider.of<TaskInfo>(context).taskId}"),
                   ),
                   Expanded(
                     flex: 1,
@@ -100,19 +94,6 @@ class _GroupGameBoardState extends State<GroupGameBoard> {
               ),
             );
           },
-        ),
-      ),
-      MaterialButton(
-        color: Colors.green,
-        onPressed: () {
-          TaskInfo task = Provider.of<TaskInfo>(context, listen: false);
-          task.nextTask();
-          Provider.of<GameBoardData>(context, listen: false)
-              .setColumn(task.getCount());
-        },
-        child: Text(
-          "Task Berikutnya",
-          style: TextStyle(color: Colors.white),
         ),
       ),
     ];
