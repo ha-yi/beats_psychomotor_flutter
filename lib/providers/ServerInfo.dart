@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:beats_ft/helper.dart';
+import 'package:beats_ft/providers/GameBoardData.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:web_socket_channel/io.dart';
@@ -15,6 +16,7 @@ class ServerInfo extends ChangeNotifier {
   bool loading = false;
 
   GameCommad dataFromServer;
+  GroupTestData groupData;
 
   String getServerFullAddress() {
     print(serverAddress);
@@ -39,7 +41,7 @@ class ServerInfo extends ChangeNotifier {
     channel.sink.add(GameCommad(command, data).toJson().toString());
   }
 
-  onData(String data) {
+  onData(dynamic data) {
     loading = false;
     error = null;
     dataFromServer = null;
@@ -51,6 +53,24 @@ class ServerInfo extends ChangeNotifier {
     }
     dataFromServer = GameCommad.fromJson(json.decode(data));
     print(dataFromServer);
+
+    switch (dataFromServer.code) {
+      case START_GROUP_TASK:
+        groupData = GroupTestData(dataFromServer.data);
+        break;
+      case ADD_GROUP_GAME_TILE:
+        print("ADD_GROUP_GAME_TILE from server");
+        TileInfo i = TileInfo.fromJson(dataFromServer.data);
+        groupData.data.addTile(i);
+        print(groupData.data.toJson().toString());
+        break;
+      case ADD_GROUP_GAME_DATA:
+        if (groupData != null) {
+          groupData.data = GameBoardData.fromJson(dataFromServer.data);
+        }
+        break;
+    }
+
     notifyListeners();
   }
 
@@ -68,9 +88,38 @@ class ServerInfo extends ChangeNotifier {
     print("WS conenction done");
     notifyListeners();
   }
+
+  localAddTile(TileInfo i) {
+    groupData.data.addTile(i);
+    notifyListeners();
+    sendGameData(ADD_GROUP_GAME_TILE, i.toJson().toString());
+  }
 }
 
 sendToServer(BuildContext context, GameCommad data) {
   ServerInfo server = Provider.of<ServerInfo>(context, listen: false);
   server.channel.sink.add(data.toJson().toString());
+}
+
+class GroupTestData {
+  int taskID = 0;
+  GameBoardData data;
+
+  int getCount() {
+    int col = 10;
+    if (taskID <= 3) {
+      col = 10;
+    } else if (taskID <= 6) {
+      col = 15;
+    } else {
+      col = 20;
+    }
+    return col;
+  }
+
+  GroupTestData(this.taskID) {
+    data = GameBoardData();
+    data.setColumn(getCount());
+    data.taskId = taskID;
+  }
 }

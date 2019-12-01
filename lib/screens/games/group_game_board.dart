@@ -1,7 +1,6 @@
-import 'package:beats_ft/providers/GameBoardData.dart';
+import 'package:beats_ft/helper.dart';
 import 'package:beats_ft/providers/ServerInfo.dart';
-import 'package:beats_ft/providers/TaskProvider.dart';
-import 'package:beats_ft/screens/games/board_tiles.dart';
+import 'package:beats_ft/screens/games/group_board_tiles.dart';
 import 'package:fancy_dialog/FancyTheme.dart';
 import 'package:fancy_dialog/fancy_dialog.dart';
 import 'package:flutter/material.dart';
@@ -22,81 +21,55 @@ class _GroupGameBoardState extends State<GroupGameBoard> {
   @override
   void initState() {
     super.initState();
+    Future.delayed(Duration(milliseconds: 300), () {
+      sendToServer(context, GameCommad(ON_GROUP_BOARD, "-"));
+    });
+  }
+
+  Future<bool> _onBack() {
+    return Future(() {
+      sendToServer(context, GameCommad(LEAVE_GROUP_BOARD, "-"));
+      return true;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        padding: EdgeInsets.all(50),
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    child: Text(
-                        "GROUP Task ke - ${Provider.of<TaskInfo>(context).taskId}"),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Container(
-                        width: 1400,
-                        height: 1000,
-                        child: Center(child: BoardTiles()),
+    return WillPopScope(
+      onWillPop: _onBack,
+      child: Scaffold(
+        body: Container(
+          padding: EdgeInsets.all(50),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                flex: 1,
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.all(10),
+                      child: Text(
+                          "GROUP Task ke - ${Provider.of<ServerInfo>(context).groupData?.taskID ?? 0}"),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Container(
+                          width: 1400,
+                          height: 1000,
+                          child: Center(child: GroupBoardTiles()),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
-  }
-
-  _buildTaskList() {
-    return [
-      Text(
-        "BEATS",
-        style: TextStyle(
-          color: Colors.blue,
-          fontSize: 30,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      Expanded(
-        child: Consumer<TaskInfo>(
-          builder: (context, task, child) {
-            if (task.finished) {
-              Future.delayed(Duration(milliseconds: 100), () {
-                showFinishDialog();
-              });
-            }
-            return SingleChildScrollView(
-              child: Column(
-                children: TASKS
-                    .map(
-                      (id) => Container(
-                        padding: EdgeInsets.all(10),
-                        color: (id == task.taskId)
-                            ? Colors.green.withAlpha(120)
-                            : Colors.transparent,
-                        child: Text("Task $id"),
-                      ),
-                    )
-                    .toList(),
-              ),
-            );
-          },
-        ),
-      ),
-    ];
   }
 
   void showFinishDialog() {

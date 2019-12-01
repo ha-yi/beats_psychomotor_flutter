@@ -8,14 +8,13 @@ import 'package:provider/provider.dart';
 
 typedef TileClickListener();
 
-class BoardTiles extends StatefulWidget {
+class GroupBoardTiles extends StatefulWidget {
   @override
   _BoardTilesState createState() => _BoardTilesState();
 }
 
-class _BoardTilesState extends State<BoardTiles> {
+class _BoardTilesState extends State<GroupBoardTiles> {
   double baseSize = 50;
-  bool enabled = true;
 
   @override
   void initState() {
@@ -28,34 +27,25 @@ class _BoardTilesState extends State<BoardTiles> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GameBoardData>(
-      builder: (context, board, _) {
-        if (board.col == null || board.col == 0) {
+    return Consumer<ServerInfo>(
+      builder: (context, server, _) {
+        if (server.groupData == null || server.groupData.taskID == 0) {
           return Container(
             child: Center(
-              child: MaterialButton(
-                onPressed: () {
-                  TaskInfo task = Provider.of<TaskInfo>(context);
-                  task.nextTask();
-                  board.setColumn(task.getCount());
-                  board.taskId = task.taskId;
-                },
-                child: Container(
-                  padding: EdgeInsets.all(16),
-                  child: Text(
-                    "MULAI",
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
+              child: Container(
+                child: Text(
+                  "Menunggu Test dimulai oleh server",
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             ),
           );
         }
-        calculateSize(board.col);
+        calculateSize(server.groupData.data.col);
 
         return Container(
           width: 1400,
@@ -68,7 +58,7 @@ class _BoardTilesState extends State<BoardTiles> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: buildBoard(board),
+                  children: buildBoard(server),
                 ),
               ),
               Container(
@@ -181,18 +171,12 @@ class _BoardTilesState extends State<BoardTiles> {
                               ),
                             ),
                           ),
-                          Container(
-                            child: Text(
-                              "Sisa waktu ${Provider.of<TaskInfo>(context).duration} detik",
-                              style: TextStyle(fontSize: 30),
-                            ),
-                          ),
                         ],
                       );
                     },
                   ),
                 ),
-              ),
+              )
             ],
           ),
         );
@@ -200,20 +184,20 @@ class _BoardTilesState extends State<BoardTiles> {
     );
   }
 
-  List<Widget> buildBoard(GameBoardData board) {
-    return board.grid.map((row) {
+  List<Widget> buildBoard(ServerInfo server) {
+    return server.groupData.data.grid.map((row) {
       return Container(
-        width: baseSize * board.col,
+        width: baseSize * server.groupData.data.col,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: createRowContent(board, row),
+          children: createRowContent(server, row),
         ),
       );
     }).toList();
   }
 
-  List<Widget> createRowContent(GameBoardData board, List<TileInfo> row) {
+  List<Widget> createRowContent(ServerInfo server, List<TileInfo> row) {
     return row.map((i) {
       Color color;
       switch (i.color) {
@@ -235,16 +219,11 @@ class _BoardTilesState extends State<BoardTiles> {
       }
       return InkWell(
         onTap: () {
-          if (!enabled) {
-            return;
-          }
           i.color = Provider.of<SelectedColor>(context, listen: false).color;
           String user = Provider.of<UserInfo>(context, listen: false).name;
           i.timestamp = DateTime.now().millisecondsSinceEpoch;
           i.userID = user;
-
-          board.updateBoard(i.x, i.y, i);
-          sendBoard(board);
+          server.localAddTile(i);
         },
         child: Container(
           width: baseSize,
@@ -261,13 +240,8 @@ class _BoardTilesState extends State<BoardTiles> {
     }).toList();
   }
 
-  void sendBoard(GameBoardData board) {
-    if (Provider.of<GameTypeProvider>(context, listen: false).isPersonal) {
-      Provider.of<ServerInfo>(context, listen: false)
-          .sendGameData(ADD_GAME_DATA, board.toJson().toString());
-    } else {
-      Provider.of<ServerInfo>(context, listen: false)
-          .sendGameData(ADD_GROUP_GAME_DATA, board.toJson().toString());
-    }
-  }
+//  void sendBoard(GameBoardData board) {
+//    Provider.of<ServerInfo>(context, listen: false)
+//        .sendGameData(ADD_GROUP_GAME_DATA, board.toJson().toString());
+//  }
 }

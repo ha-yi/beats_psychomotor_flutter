@@ -2,6 +2,7 @@ import 'package:beats_ft/helper.dart';
 import 'package:beats_ft/providers/GameBoardData.dart';
 import 'package:beats_ft/providers/ServerInfo.dart';
 import 'package:beats_ft/providers/TaskProvider.dart';
+import 'package:beats_ft/screens/fullscreen_dialog.dart';
 import 'package:beats_ft/screens/games/board_tiles.dart';
 import 'package:fancy_dialog/FancyTheme.dart';
 import 'package:fancy_dialog/fancy_dialog.dart';
@@ -25,6 +26,18 @@ class _GameBoardState extends State<GameBoard> {
     super.initState();
     Future.delayed(Duration(milliseconds: 300), () {
       sendToServer(context, GameCommad(91, ""));
+    });
+    Future.delayed(Duration(milliseconds: 500), () {
+      var task = Provider.of<TaskInfo>(context);
+      task.addListener(() {
+        if (task.duration <= 0) {
+          DialogPopup popup = DialogPopup(context);
+          popup.show("Timeout", "Waktu sudah habis. Kerjakan task berikutnya?",
+              () {
+            task.nextTask();
+          });
+        }
+      });
     });
   }
 

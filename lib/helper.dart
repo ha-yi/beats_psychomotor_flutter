@@ -1,6 +1,6 @@
 class GameCommad {
   final int code;
-  final String data;
+  final dynamic data;
 
   GameCommad(this.code, this.data);
 
@@ -14,10 +14,16 @@ class GameCommad {
       };
 }
 
-final ADD_USER_INFO = 1;
-final ADD_GAME_DATA = 2;
-final ADD_GROUP_GAME_DATA = 3;
-final START_PERSONAL_GAME = 5;
-final START_GROUP_GAME = 6;
-final START_PERSONAL_TASK = 7;
-final START_GROUP_TASK = 8;
+const ADD_USER_INFO = 1;
+const ADD_GAME_DATA = 2;
+const ADD_GROUP_GAME_DATA = 3;
+const ADD_GROUP_GAME_TILE = 31;
+const START_PERSONAL_GAME = 5;
+const START_GROUP_GAME = 6;
+const START_PERSONAL_TASK = 7;
+const START_GROUP_TASK = 8;
+
+final READY_FOR_GROUP = 9;
+final NOT_READY_FOR_GROUP = 91;
+final ON_GROUP_BOARD = 92;
+final LEAVE_GROUP_BOARD = 93;

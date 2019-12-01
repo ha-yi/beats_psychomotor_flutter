@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TileInfo {
-  int x, y;
+  num x;
+  num y;
   String color;
   int timestamp;
   String userID;
@@ -13,7 +14,7 @@ class TileInfo {
       : x = json['x'],
         y = json['y'],
         color = json['color'],
-        timestamp = json['timestamp'];
+        timestamp = int.parse(json['timestamp']);
 
   Map<String, dynamic> toJson() => {
         'x': x,
@@ -24,9 +25,9 @@ class TileInfo {
 }
 
 class GameBoardData extends ChangeNotifier {
-  int col = 0;
+  num col = 0;
   List<List<TileInfo>> grid = [];
-  int taskId;
+  num taskId;
 
   GameBoardData();
 
@@ -53,6 +54,16 @@ class GameBoardData extends ChangeNotifier {
     notifyListeners();
   }
 
+  addTile(TileInfo i) {
+    if (grid.length > i.y && grid[i.y].length > i.x) {
+      TileInfo ti = grid[i.y][i.x];
+      if (i.timestamp >= (ti.timestamp ?? 0)) {
+        grid[i.y][i.x] = i;
+      }
+    }
+    notifyListeners();
+  }
+
   updateBoard(int x, int y, TileInfo i) {
     if (grid.length < y && grid[y].length < x) {
       grid[y][x] = i;
@@ -60,9 +71,13 @@ class GameBoardData extends ChangeNotifier {
     notifyListeners();
   }
 
-  GameBoardData.fromJson(Map<String, dynamic> json)
-      : col = json['col'],
-        grid = json['grid'];
+  GameBoardData.fromJson(Map<String, dynamic> json) : col = json['col'] {
+    grid = (json['grid'] as List<dynamic>).map((r) {
+      return (r as List<dynamic>).map((item) {
+        return TileInfo.fromJson(item as Map<String, dynamic>);
+      }).toList();
+    }).toList();
+  }
 
   Map<String, dynamic> toJson() => {
         'col': col,
@@ -77,6 +92,7 @@ class GameBoardData extends ChangeNotifier {
 
 class SelectedColor extends ChangeNotifier {
   String color = "W";
+
   setColor(String c) {
     color = c;
     notifyListeners();
