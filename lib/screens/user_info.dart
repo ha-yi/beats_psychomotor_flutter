@@ -109,10 +109,10 @@ class _UserInfoWidgetState extends State<UserInfoWidget> {
       return;
     }
 
-    if (email == null || email.isEmpty) {
-      showErrorSnack("Email tidak boleh kosong");
-      return;
-    }
+//    if (email == null || email.isEmpty) {
+//      showErrorSnack("Email tidak boleh kosong");
+//      return;
+//    }
     if (age == null || age.isEmpty) {
       showErrorSnack("Usia tidak boleh kosong");
       return;
@@ -135,13 +135,14 @@ class _UserInfoWidgetState extends State<UserInfoWidget> {
 
   void processSaveData() {
     var data = Provider.of<UserInfo>(context, listen: false);
-    
+
     data.age = age;
     data.gender = gender;
-    data.email = email;
+    data.email = email ?? "-";
     data.name = name;
     widget.parentState.onUserDataSaved();
-    sendToServer(context, GameCommad(ADD_USER_INFO, json.encode(data.toJson()).toString()));
+    sendToServer(context,
+        GameCommad(ADD_USER_INFO, json.encode(data.toJson()).toString()));
     dispose();
   }
 }

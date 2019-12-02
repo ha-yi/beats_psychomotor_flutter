@@ -2,6 +2,7 @@ import 'package:beats_ft/providers/UserInfo.dart';
 import 'package:beats_ft/screens/choice_screen.dart';
 import 'package:beats_ft/screens/user_info.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -21,9 +22,17 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: createUI(),
+    SystemChrome.setEnabledSystemUIOverlays([]);
+    return WillPopScope(
+      onWillPop: () {
+        return Future<bool>(() {
+          return false;
+        });
+      },
+      child: Scaffold(
+        body: Container(
+          child: createUI(),
+        ),
       ),
     );
   }

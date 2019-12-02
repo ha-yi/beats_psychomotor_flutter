@@ -5,6 +5,7 @@ class UserInfo extends ChangeNotifier {
   String email;
   String age;
   String gender;
+  bool personalFinish = false;
   onChange() {
     notifyListeners();
   }

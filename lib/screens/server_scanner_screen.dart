@@ -20,8 +20,21 @@ class _ServerScannerScreenState extends State<ServerScannerScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Text(
-              "BEATS client",
-              style: TextStyle(fontSize: 20),
+              "BEATS",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 60,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              "psychomotor",
+              style: TextStyle(
+                color: Colors.blue.withAlpha(100),
+                fontSize: 20,
+                letterSpacing: 5,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             Container(
               margin: EdgeInsets.all(20),

@@ -2,6 +2,8 @@ import 'package:beats_ft/helper.dart';
 import 'package:beats_ft/providers/GameBoardData.dart';
 import 'package:beats_ft/providers/ServerInfo.dart';
 import 'package:beats_ft/providers/TaskProvider.dart';
+import 'package:beats_ft/providers/UserInfo.dart';
+import 'package:beats_ft/screens/fullscreen_dialog.dart';
 import 'package:beats_ft/screens/games/game_board.dart';
 import 'package:beats_ft/screens/games/group_game_board.dart';
 import 'package:beats_ft/screens/wating_group_started.dart';
@@ -15,10 +17,12 @@ class ChoiceScreen extends StatefulWidget {
 
 class _ChoiceScreenState extends State<ChoiceScreen> {
   GlobalKey<ScaffoldState> _scaffold = GlobalKey();
+  DialogPopup popup;
 
   @override
   void initState() {
     super.initState();
+    popup = DialogPopup(context);
   }
 
   @override
@@ -127,6 +131,18 @@ class _ChoiceScreenState extends State<ChoiceScreen> {
   }
 
   void _gotoPersonalTest() {
+    if (Provider.of<UserInfo>(context, listen: false).personalFinish) {
+      popup.show(
+          "Test Personal",
+          "Test Personal anda sudah selesai.\nUlangi? (Progres sebelumnya akan hilang)",
+          _startPersonal,
+          onCancel: () {});
+    } else {
+      _startPersonal();
+    }
+  }
+
+  _startPersonal() {
     Provider.of<TaskInfo>(context).reset();
     Provider.of<GameBoardData>(context, listen: false).reset();
     Provider.of<GameTypeProvider>(context, listen: false).isPersonal = true;

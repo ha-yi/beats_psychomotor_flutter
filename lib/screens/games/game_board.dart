@@ -2,11 +2,13 @@ import 'package:beats_ft/helper.dart';
 import 'package:beats_ft/providers/GameBoardData.dart';
 import 'package:beats_ft/providers/ServerInfo.dart';
 import 'package:beats_ft/providers/TaskProvider.dart';
+import 'package:beats_ft/providers/UserInfo.dart';
 import 'package:beats_ft/screens/fullscreen_dialog.dart';
 import 'package:beats_ft/screens/games/board_tiles.dart';
 import 'package:fancy_dialog/FancyTheme.dart';
 import 'package:fancy_dialog/fancy_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class GameBoard extends StatefulWidget {
@@ -20,10 +22,12 @@ class GameBoard extends StatefulWidget {
 
 class _GameBoardState extends State<GameBoard> {
   ServerInfo server;
+  DialogPopup popup;
 
   @override
   void initState() {
     super.initState();
+    popup = DialogPopup(context);
     Future.delayed(Duration(milliseconds: 300), () {
       sendToServer(context, GameCommad(91, ""));
     });
@@ -31,10 +35,13 @@ class _GameBoardState extends State<GameBoard> {
       var task = Provider.of<TaskInfo>(context);
       task.addListener(() {
         if (task.duration <= 0) {
-          DialogPopup popup = DialogPopup(context);
           popup.show("Timeout", "Waktu sudah habis. Kerjakan task berikutnya?",
               () {
             task.nextTask();
+            Provider.of<GameBoardData>(context, listen: false)
+                .setColumn(task.getCount());
+            Provider.of<GameBoardData>(context, listen: false).taskId =
+                task.taskId;
           });
         }
       });
@@ -43,6 +50,7 @@ class _GameBoardState extends State<GameBoard> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays([]);
     return Scaffold(
       body: Container(
         padding: EdgeInsets.all(50),
@@ -58,11 +66,6 @@ class _GameBoardState extends State<GameBoard> {
               flex: 1,
               child: Column(
                 children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    child: Text(
-                        "Task ke - ${Provider.of<TaskInfo>(context).taskId}"),
-                  ),
                   Expanded(
                     flex: 1,
                     child: FittedBox(
@@ -138,16 +141,10 @@ class _GameBoardState extends State<GameBoard> {
   }
 
   void showFinishDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => FancyDialog(
-        title: "Selamat!",
-        descreption: "Semua task sudah selesai anda kerjakan.",
-        theme: FancyTheme.FANCY,
-        okFun: () {
-          Navigator.pop(context);
-        },
-      ),
-    );
+    Provider.of<UserInfo>(context, listen: false).personalFinish = true;
+    popup.show("Selamat", "Semua task sudah selesai anda kerjakan.", () {
+      popup.dismiss();
+      Navigator.pop(context);
+    });
   }
 }

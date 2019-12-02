@@ -14,6 +14,7 @@ class ServerInfo extends ChangeNotifier {
   bool connected = false;
   var error;
   bool loading = false;
+  bool timeout = false;
 
   GameCommad dataFromServer;
   GroupTestData groupData;
@@ -55,8 +56,16 @@ class ServerInfo extends ChangeNotifier {
     print(dataFromServer);
 
     switch (dataFromServer.code) {
+      case START_GROUP_GAME:
+        timeout = false;
+        groupData = GroupTestData(0);
+        break;
       case START_GROUP_TASK:
+        timeout = false;
         groupData = GroupTestData(dataFromServer.data);
+        break;
+      case ADD_GROUP_GAME_TIMEOUT:
+        timeout = true;
         break;
       case ADD_GROUP_GAME_TILE:
         print("ADD_GROUP_GAME_TILE from server");

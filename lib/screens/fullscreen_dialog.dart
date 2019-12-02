@@ -5,18 +5,21 @@ class DialogPopup {
   final BuildContext context;
   OverlayEntry overlayEntry;
   OverlayState overlayState;
+  bool _isShowing = false;
 
   DialogPopup(this.context);
 
-  void show(String title, String message, Function onOK) {
+  void show(String title, String message, Function onOK, {Function onCancel}) {
+    if (_isShowing) return;
     overlayState = Overlay.of(context);
     overlayEntry = new OverlayEntry(
-        builder: (context) => _build(context, title, message, onOK));
+        builder: (context) => _build(context, title, message, onOK, onCancel));
     overlayState.insert(overlayEntry);
+    _isShowing = true;
   }
 
-  Widget _build(
-      BuildContext context, String title, String message, Function onOK) {
+  Widget _build(BuildContext context, String title, String message,
+      Function onOK, Function onCancel) {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Stack(
@@ -54,18 +57,34 @@ class DialogPopup {
                     margin: EdgeInsets.all(16),
                     child: Text(message),
                   ),
-                  MaterialButton(
-                    minWidth: 200,
-                    onPressed: () {
-                      onOK();
-                      dismiss();
-                    },
-                    color: Colors.cyan,
-                    child: Text(
-                      "OK",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
+                  (onOK != null)
+                      ? MaterialButton(
+                          minWidth: 200,
+                          onPressed: () {
+                            onOK();
+                            dismiss();
+                          },
+                          color: Colors.cyan,
+                          child: Text(
+                            "OK",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        )
+                      : Container(),
+                  (onCancel != null)
+                      ? MaterialButton(
+                          minWidth: 200,
+                          onPressed: () {
+                            onCancel();
+                            dismiss();
+                          },
+                          color: Colors.deepOrange,
+                          child: Text(
+                            "Batal",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        )
+                      : Container(),
                 ],
               ),
             ),
@@ -76,6 +95,7 @@ class DialogPopup {
   }
 
   void dismiss() {
-    overlayEntry.remove();
+    _isShowing = false;
+    if (overlayEntry != null) overlayEntry.remove();
   }
 }

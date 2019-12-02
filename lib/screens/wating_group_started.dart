@@ -19,6 +19,7 @@ class _WaitingForServerStartGameState extends State<WaitingForServerStartGame> {
     super.initState();
     Future.delayed(Duration(milliseconds: 300), () {
       sendToServer(context, GameCommad(9, "-"));
+      Provider.of<ServerInfo>(context).addListener(_waitForServerUpdate);
     });
   }
 
@@ -36,7 +37,6 @@ class _WaitingForServerStartGameState extends State<WaitingForServerStartGame> {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<ServerInfo>(context).addListener(_waitForServerUpdate);
     return WillPopScope(
       onWillPop: _onBack,
       child: Scaffold(
@@ -89,7 +89,7 @@ class _WaitingForServerStartGameState extends State<WaitingForServerStartGame> {
       Provider.of<GameBoardData>(context, listen: false).reset();
       Provider.of<GameTypeProvider>(context, listen: false).isPersonal = false;
 
-      Navigator.push(
+      Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => GroupGameBoard()));
     }
   }

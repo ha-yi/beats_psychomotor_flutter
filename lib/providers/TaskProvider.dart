@@ -38,6 +38,9 @@ class TaskInfo extends ChangeNotifier {
 
   void startTimer() {
     duration = 120;
+    if (_timer != null) {
+      _timer.cancel();
+    }
     _timer = Timer.periodic(Duration(seconds: 1), (t) {
       if (duration <= 0) {
         t.cancel();
