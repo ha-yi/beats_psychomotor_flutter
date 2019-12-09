@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:beats_ft/helper.dart';
 import 'package:beats_ft/providers/GameBoardData.dart';
@@ -28,13 +29,18 @@ class ServerInfo extends ChangeNotifier {
   }
 
   startConnect() {
+    stderr.writeln('Start connection to ws://${getServerFullAddress()}');
     error = null;
     loading = true;
-    channel = IOWebSocketChannel.connect('ws://${getServerFullAddress()}');
+    channel = IOWebSocketChannel.connect(
+      'ws://${getServerFullAddress()}',
+      pingInterval: Duration(milliseconds: 1000),
+    );
+
     channel.stream.listen((data) => onData(data),
         onError: (e) => onError(e),
         onDone: () => onDone(),
-        cancelOnError: true);
+        cancelOnError: false);
     notifyListeners();
   }
 
@@ -49,6 +55,7 @@ class ServerInfo extends ChangeNotifier {
     print(data);
     if (data.trim() == "connected") {
       connected = true;
+      stderr.writeln('init connection');
       notifyListeners();
       return;
     }
@@ -83,19 +90,27 @@ class ServerInfo extends ChangeNotifier {
     notifyListeners();
   }
 
-  onError(e) {
+  onError(WebSocketChannelException e) {
     loading = false;
     print("WS conenction error $e");
     connected = false;
     error = e;
+    if (channel.closeCode != null || e != null) {
+      stderr.writeln('Connection closed,, reconnecting....');
+      startConnect();
+    }
     notifyListeners();
   }
 
   onDone() {
-    loading = false;
-    connected = false;
+//    loading = false;
+//    connected = false;
     print("WS conenction done");
-    notifyListeners();
+    if (channel.closeCode != null) {
+      stderr.writeln('Connection closed,, reconnecting....');
+      startConnect();
+    }
+//    notifyListeners();
   }
 
   localAddTile(TileInfo i) {
