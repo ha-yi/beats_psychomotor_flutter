@@ -45,6 +45,24 @@ class _BoardTilesState extends State<GroupBoardTiles> {
             ),
           );
         }
+
+        if (server.groupData.taskID >= 10) {
+          return Container(
+            child: Center(
+              child: Container(
+                child: Text(
+                  "Semua task sudah habis.",
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+
         calculateSize(server.groupData.data.col);
 
         return Container(
